@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://d.line-scdn.net/liff/1.0/sdk.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@1.5.x/dist/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script>
+        const transaction_id = '{{ transaction_id }}';
+    </script>
+</head>
+<body>
+    <div id="app">
+        <template id="drink_bar">
+<!--    API is loading...     -->
+            <v-container fluid v-if="api_loading === true">
+                <v-layout>
+                    <v-flex xs12>
+                        <div class="resultContainer" >
+                            <v-layout align-center justify-center fill-height>
+                                <v-progress-circular
+                                        :size="70"
+                                        :width="7"
+                                        color="green"
+                                        indeterminate
+                                ></v-progress-circular>
+                            </v-layout>
+                        </div>
+                    </v-flex>
+                </v-layout>
+            </v-container>
+<!--    No order - Item list     -->
+            <v-container fluid v-else-if="flow_status === 'INITIAL'">
+                <v-layout>
+                    <v-flex xs12>
+                        <v-toolbar color="green darken-2" dark>
+                            <v-toolbar-title>LINE Things Drink bar</v-toolbar-title>
+                        </v-toolbar>
+                        <!-- 商品一覧 -->
+                        <v-card>
+                            <v-container
+                                    fluid
+                                    grid-list-lg
+                            >
+                                <v-layout row wrap>
+                                    <v-flex xs12 v-for="(item, index) in items">
+                                        <v-card color="brown lighten-5" class="black--text">
+                                            <v-layout pt-1>
+                                                <v-flex xs5>
+                                                    <v-img
+                                                            :src="item.image_url"
+                                                            height="125px"
+                                                            contain
+                                                    ></v-img>
+                                                </v-flex>
+                                                <v-flex xs7>
+                                                    <!-- 商品情報 -->
+                                                    <v-card-title primary-title>
+                                                        <div>
+                                                            <div><h4 class="pb-1">[[ item.name ]]</h4></div>
+                                                            <div><h6 class="pb-2">[[ item.description ]]</h6></div>
+                                                            <div><h4 class="green--text">[[ item.unit_price ]] 円</h4></div>
+                                                        </div>
+                                                    </v-card-title>
+                                                </v-flex>
+                                            </v-layout>
+                                            <v-divider light></v-divider>
+                                            <v-card-actions class="pa-3">
+                                                <v-btn
+                                                        @click="orderItem(item.id)"
+                                                        class="white--text"
+                                                        color="brown" block>
+                                                    Order
+                                                </v-btn>
+                                            </v-card-actions>
+                                        </v-card>
+                                    </v-flex>
+
+                                </v-layout>
+                            </v-container>
+                        </v-card>
+                    </v-flex>
+                </v-layout>
+            </v-container>
+<!--    show LINE Pay button     -->
+            <v-container fluid v-else-if="flow_status === 'ORDERED' && order.id != null">
+                <v-layout>
+                    <v-flex xs12>
+                        <v-toolbar color="green darken-2" dark>
+                            <v-toolbar-title>LINE Pay で支払いする</v-toolbar-title>
+                        </v-toolbar>
+                        <v-card>
+<!--                            <v-layout row>-->
+<!--                                <v-flex xs10 offset-xs1>-->
+<!--                                    <div class="headline">[[ order.title ]]</div>-->
+<!--                                </v-flex>-->
+<!--                            </v-layout>-->
+                            <v-layout pt-4 pb-1>
+                                <v-flex xs5>
+                                    <v-img
+                                            :src="order.ordered_item_image_url"
+                                            height="125px"
+                                            contain
+                                    ></v-img>
+                                </v-flex>
+                                <v-flex xs7>
+                                    <v-card-title primary-title>
+                                        <div>
+                                            <div><h4 class="pb-2">[[ order.title ]]</h4></div>
+                                            <div><h4 class="green--text">[[ order.amount ]] 円</h4></div>
+                                        </div>
+                                    </v-card-title>
+                                </v-flex>
+                            </v-layout>
+                            <v-card-actions class="pa-3">
+                                <v-btn
+                                        @click="payReserve()"
+                                        class="white--text"
+                                        color="green"
+                                        block
+                                        large
+                                >
+                                    Pay by LINE Pay
+                                </v-btn>
+<!--                                <v-flex xs8 offset-xs2>-->
+<!--                                    <form action="/pay/reserve" method="post">-->
+<!--                                        <input type="hidden" name="order_id" :value="order.id" />-->
+<!--                                        <input type="hidden" name="user_id" :value="line_user_id" />-->
+<!--                                        <button type="submit">-->
+<!--                                            <img src="{{ url_for('static', filename='line_pay_logo.png') }}" />-->
+<!--                                        </button>-->
+<!--                                    </form>-->
+<!--                                </v-flex>-->
+                            </v-card-actions>
+                        </v-card>
+                    </v-flex>
+                </v-layout>
+            </v-container>
+<!--    redirect to LINE Pay payment page     -->
+            <v-container fluid v-else-if="flow_status === 'PAYING'">
+                <v-layout>
+                    <v-flex xs12>
+                        <h3>Please wait...</h3>
+                    </v-flex>
+                </v-layout>
+            </v-container>
+<!--    LINE Pay transaction done!     -->
+<!--    show Drink dispenser controller     -->
+            <v-container fluid v-else-if="transaction_id && flow_status === 'PAID'">
+                <v-layout>
+                    <v-flex xs12>
+                        <v-card>
+                            <v-toolbar color="green darken-2" dark>
+                                <v-toolbar-title>LINE Things Drink dispenser</v-toolbar-title>
+                            </v-toolbar>
+                            <v-card-title primary-title>
+                                <v-flex xs-12>
+                                    <div class="text-xs-center pa-3">
+                                        <h4 v-if="line_things.device_order_done === false">
+                                            ドリンクを抽出しています。しばらくお待ち下さい
+                                        </h4>
+                                        <h4 v-if="line_things.device_order_done === true">
+                                            ドリンクの抽出が完了しました！
+                                        </h4>
+                                    </div>
+                                    <div class="text-xs-center pa-3">
+                                        <v-btn
+                                                :loading="!line_things.device_order_done"
+                                                :disabled="!line_things.device_order_done"
+                                                color="green"
+                                                large
+                                                block
+                                                pt-5
+                                                @click="closeLiffWindow()"
+                                        >
+                                            ご購入ありがとうございました
+                                            <template v-slot:loader>
+                                                <span>処理中...</span>
+                                            </template>
+                                        </v-btn>
+                                    </div>
+                                </v-flex>
+<!--                                <div>-->
+<!--                                    <h3 v-if="line_things.ble_available === true"-->
+<!--                                            class="headline mb-0">-->
+<!--                                        BLE is available!!!-->
+<!--                                    </h3>-->
+<!--                                    <h3 v-else class="headline mb-0">-->
+<!--                                        BLE is not available!!!-->
+<!--                                    </h3>-->
+<!--                                    <div> {{ message }} </div>-->
+<!--                                </div>-->
+<!--                                <div>-->
+<!--                                    <div v-if="line_things.is_connected_to_device === true"-->
+<!--                                            class="headline mb-0">-->
+<!--                                        <h3>Connected to BLE device.</h3>-->
+<!--                                        [[ line_things.connected_device.id ]]<br/>-->
+<!--                                        [[ line_things.connected_device.name ]]<br/>-->
+<!--                                    </div>-->
+<!--                                    <h3 v-else class="headline mb-0">-->
+<!--                                        No BLE device for connect...-->
+<!--                                    </h3>-->
+<!--                                </div>-->
+                            </v-card-title>
+<!--                            <v-card-actions>-->
+<!--                                buttons here-->
+<!--                            </v-card-actions>-->
+                        </v-card>
+                    </v-flex>
+                </v-layout>
+            </v-container>
+<!--   Something bad...   -->
+            <v-container v-else>
+                <v-layout>
+                    <v-flex xs12>
+                        <h1>
+                            Unknown event...
+                        </h1>
+                    </v-flex>
+                </v-layout>
+            </v-container>
+<!-- Footer -->
+            <v-container>
+                <v-layout >
+                    <v-flex xs-12>
+                        <v-card>
+                            <v-card-title primary-title>
+                                <div>
+                                    <div>LIFF Version: [[ liff_version ]]</div>
+                                    <div>App Version: [[ app_version ]]</div>
+                                </div>
+                            </v-card-title>
+                        </v-card>
+                    </v-flex>
+                </v-layout>
+            </v-container>
+        </template>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@1.5.x/dist/vuetify.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="{{ url_for('static', filename='vconsole.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='drink_bar.js') }}"></script>
+</body>
+</html>

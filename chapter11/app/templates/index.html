@@ -1,0 +1,14 @@
+<!doctype html>
+<html>
+   <body>
+      <h1>{{ title }}!</h1>
+      <ul>
+         {% for item in items %}
+         <li>{{ item.id }}: {{ item.name }} / {{ item.description }} |  {{ item.unit_price }} </li>
+            <ol>
+               <img src="{{ item.image_url}}" />
+            </ol>
+         {% endfor %}
+      </ul>
+   </body>
+</html>

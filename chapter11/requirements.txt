@@ -1,0 +1,7 @@
+flask
+SQLAlchemy
+flask_sqlalchemy
+Jinja2
+psycopg2
+requests
+line-bot-sdk
