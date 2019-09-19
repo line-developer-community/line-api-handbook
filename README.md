@@ -2,6 +2,8 @@
 
 本リポジトリは、[技術書典7](https://techbookfest.org/event/tbf07)にて頒布された[LINE API HANDBOOK](https://techbookfest.org/event/tbf07/circle/5677593911099392)のソースコードリポジトリです。  
 
+## [第3章 BlazorとAzure Functions で作る LIFF アプリケーション](./chapter03/README.md)
+
 ## [第6章 TypeScript × Clovaスキル開発](./chapter06/README.md)
 
 ## [第10章 ちょっとだけセキュアな認証システムをLINE Thingsでやってみた](./chapter10/README.md)
