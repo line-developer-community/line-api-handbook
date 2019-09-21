@@ -1,0 +1,2 @@
+# ClovaVentriloquism
+Durable Functionsを使って作ったClovaの腹話術スキルです。

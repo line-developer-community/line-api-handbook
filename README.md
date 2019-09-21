@@ -6,6 +6,8 @@
 
 ## [第3章 BlazorとAzure Functions で作る LIFF アプリケーション](./chapter03/README.md)
 
+## [第5章 C#とAzureでClovaスキル開発～裏技を添えて～](./chapter05/README.md)
+
 ## [第6章 TypeScript × Clovaスキル開発](./chapter06/README.md)
 
 ## [第7章 AWS Lambdaを使ってLINEログインを実装してみよう！](./chapter07/README.md)

@@ -1,0 +1,8 @@
+﻿{
+  "version": "2.0",
+  "extensions": {
+    "queues": {
+      "maxPollingInterval": "00:00:03"
+    }
+  }
+}
