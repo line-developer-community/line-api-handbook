@@ -6,7 +6,7 @@
 
 ## [第6章 TypeScript × Clovaスキル開発](./chapter06/README.md)
 
-## [第7章 AWS Lambdaを使ってLINEログインを実装しよう！](./chapter07/README.md)
+## [第7章 AWS Lambdaを使ってLINEログインを実装してみよう！](./chapter07/README.md)
 
 ## [第10章 ちょっとだけセキュアな認証システムをLINE Thingsでやってみた](./chapter10/README.md)
 
