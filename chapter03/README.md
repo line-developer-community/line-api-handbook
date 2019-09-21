@@ -5,7 +5,7 @@
 LINE Front-end Framework (LIFF) を利用したTodo管理アプリケーションをBlazor（client-side）のSPAで実装します。
 
 ### 注意
-本省の内容に沿ってアプリケーションの作成を試していただく場合は、以下のリポジトリをフォークして作業を始めてください。
+本章の内容に沿ってアプリケーションの作成を試していただく場合は、以下のリポジトリをフォークして作業を始めてください。
 
 https://github.com/pierre3/liff-blazor-todo-app
 
