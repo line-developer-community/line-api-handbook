@@ -6,6 +6,8 @@
 
 ## [第6章 TypeScript × Clovaスキル開発](./chapter06/README.md)
 
+## [第7章 AWS Lambdaを使ってLINEログインを実装しよう！](./chapter07/README.md)
+
 ## [第10章 ちょっとだけセキュアな認証システムをLINE Thingsでやってみた](./chapter10/README.md)
 
 ## [第11章 LINE Pay 決済とLINE Things に対応したドリンクバーを開発する](./chapter11/README.md)
